@@ -17,7 +17,7 @@ public class App {
     public static void main(String[] args) {
         String config_file = args[0];
         int id = Integer.parseInt(args[1]);
-        int port = Integer.parseInt(args[0]);
+        int port = Integer.parseInt(args[2]);
         App app = new App(config_file, id, port);
         app.start();
     }
