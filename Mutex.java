@@ -61,6 +61,7 @@ public class Mutex {
             throw new RuntimeException(e);
         }
         System.out.println("All incoming connections established");
+        System.out.println("All connections: " + channelMap.keys());
     }
 
     public void broadcast(Message msg) {
