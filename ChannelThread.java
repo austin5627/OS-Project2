@@ -5,7 +5,7 @@ import java.nio.channels.ClosedChannelException;
 
 public class ChannelThread extends Thread {
     SctpChannel sc;
-    Mutex mutex;
+    final Mutex mutex;
     int connected_id;
 
     public ChannelThread(SctpChannel sc, Mutex mutex, int connected_id) {

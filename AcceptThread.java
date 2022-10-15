@@ -6,6 +6,7 @@ public class AcceptThread extends Thread {
     private final Mutex mutex;
     private final int portNum;
     public boolean acceptNew = true;
+    public int numConnections = 0;
 
     public AcceptThread(Mutex mutex, int portNum) {
         this.mutex = mutex;
@@ -23,7 +24,10 @@ public class AcceptThread extends Thread {
                 int connected_id = message.sender;
                 ChannelThread ct = new ChannelThread(sc, mutex, connected_id);
                 ct.start();
-                acceptNew = !mutex.addConnection(connected_id, sc);
+                numConnections++;
+                mutex.addConnection(connected_id, sc);
+                System.out.println("Connection from " + connected_id);
+                acceptNew = numConnections >= (mutex.numProc - mutex.nodeID - 1);
             }
             System.out.println("Finished accepting new connections");
         } catch (Exception e) {
