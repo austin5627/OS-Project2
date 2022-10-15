@@ -32,8 +32,7 @@ public class Mutex {
         int i = 0;
         while (i < nodeID) {
             try {
-                SctpChannel channel = SctpChannel.open();
-                channel.connect(addresses[i]);
+                SctpChannel channel = SctpChannel.open(addresses[i], 1, 1);
                 Message msg = new Message(nodeID, MessageType.connect, "Connecting from " + nodeID, logClock.get());
                 msg.send(channel);
                 channelMap.put(i, channel);
