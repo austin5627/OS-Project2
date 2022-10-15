@@ -23,6 +23,7 @@ public class App {
     }
 
     public App(String config_file, int nodeID, int portNum) {
+        System.out.println("Starting node " + nodeID + " on port " + portNum);
         load_config(config_file, nodeID);
         this.nodeID = nodeID;
         this.portNum = portNum;
