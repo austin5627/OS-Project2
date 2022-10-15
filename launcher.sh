@@ -10,6 +10,7 @@ else
   export PROJDIR=$HOME/cs6378/proj2/cs6378proj2
 fi
 
+echo $PROJDIR
 # Directory where the config file is located on your local system
 export CONFIGLOCAL=./config.txt
 
