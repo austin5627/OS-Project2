@@ -7,12 +7,12 @@ export netid=$(whoami)
 #if [[ $netid -eq "ash170000" ]]; then
 #  export PROJDIR=$HOME/CS-6378/cs6378proj2
 #else
-  export PROJDIR=$HOME/cs6378/proj2/cs6378proj2
+export PROJDIR=$HOME/cs6378/proj2/cs6378proj2
 #fi
-echo $ne
+echo $netid
 echo $PROJDIR
 # Directory where the config file is located on your local system
-export CONFIGLOCAL=./config.txt
+export CONFIGLOCAL=config.txt
 
 # Directory your java classes are in
 export BINDIR=$PROJDIR
