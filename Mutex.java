@@ -39,6 +39,7 @@ public class Mutex {
                 channelMap.put(i, channel);
                 ChannelThread channelThread = new ChannelThread(channel, this, i);
                 channelThread.start();
+                i++;
             } catch (ConnectException e) {
                 System.out.println("Connection refused, retrying in 1 second...");
                 try {
