@@ -24,7 +24,7 @@ export PROG=App
 # ends with a slash
 export OUTPUTDIR=$PROJDIR/
 
-javac App.java
+javac App.java ChannelThread.java Mutex.java AcceptThread.java
 #
 #scp -r ./out/production/cs6378proj2/ $netid@csgrads1.utdallas.edu:~/cs6378/proj2/
 
