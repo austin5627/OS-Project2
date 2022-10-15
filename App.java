@@ -29,8 +29,9 @@ public class App {
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
     }
 
-    public void load_config(String config_file, int nodeID) {
-        try (BufferedReader br = new BufferedReader(new FileReader(config_file))){
+    public void load_config(String filename, int nodeID) {
+        File configFile = new File(filename);
+        try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
             Scanner scanner = new Scanner(line);
             int num_nodes = scanner.nextInt();
