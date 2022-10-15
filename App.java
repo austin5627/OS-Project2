@@ -27,6 +27,7 @@ public class App {
         this.nodeID = nodeID;
         this.portNum = portNum;
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
+        System.out.println("");
     }
 
     public void load_config(String filename, int nodeID) {
@@ -66,6 +67,7 @@ public class App {
         int requests = 0;
         while (requests < NUM_REQUESTS) {
             int delay = (int) Math.log(1 - Math.random()) * -MEAN_INTER_REQUEST_DELAY;
+            System.out.println("Non-critical section delay: " + delay);
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
