@@ -30,7 +30,7 @@ cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
 (
     read i
     echo "$i"
-    while [[ $n -lt $i ]]
+    while [[ $n -lt $(echo $i | sed "s/\s.*//") ]]
     do
     	read line
     	node=$( echo "$line "| awk '{ print $1 }' )
