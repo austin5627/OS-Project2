@@ -41,6 +41,7 @@ public class App {
             neighbors = new InetSocketAddress[num_nodes];
             MEAN_INTER_REQUEST_DELAY = scanner.nextInt();
             MEAN_CS_EXECUTION_TIME = scanner.nextInt();
+            NUM_REQUESTS = scanner.nextInt();
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
                     continue;
