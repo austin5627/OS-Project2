@@ -25,7 +25,7 @@ public class AcceptThread extends Thread {
                 ct.start();
                 acceptNew = !mutex.addConnection(connected_id, sc);
             }
-            mutex.notify();
+            System.out.println("Finished accepting new connections");
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

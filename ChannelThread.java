@@ -44,6 +44,9 @@ public class ChannelThread extends Thread {
 
                 if (mutex.requestTime.get() < message.clock) {
                     mutex.higherTimestamp.add(message.sender);
+                    synchronized (mutex) {
+                        mutex.notify();
+                    }
                 }
 
 
