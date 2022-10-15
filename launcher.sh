@@ -5,9 +5,9 @@ export netid=$(whoami)
 
 # Root directory of your project
 if [[ $netid -eq "ash170000" ]]; then
-  export PROJDIR=$HOME/CS-6378/cs6378proj1/
+  export PROJDIR=$HOME/CS-6378/cs6378proj2/
 else
-  export PROJDIR=$HOME/cs6378/proj1/
+  export PROJDIR=$HOME/cs6378/proj2/
 fi
 
 # Directory where the config file is located on your local system
