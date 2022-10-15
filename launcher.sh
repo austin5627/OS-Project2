@@ -11,7 +11,7 @@ export PROJDIR=$HOME/cs6378/proj2/cs6378proj2
 #fi
 echo $netid
 echo $PROJDIR
-# Directory where the config file is located on your local system
+# Directory where the config file is located
 export CONFIGLOCAL=$PROJDIR/config.txt
 
 # Directory your java classes are in

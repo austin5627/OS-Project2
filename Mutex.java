@@ -1,8 +1,10 @@
 import com.sun.nio.sctp.SctpChannel;
 
+import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
 import java.util.PriorityQueue;
+import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -27,19 +29,28 @@ public class Mutex {
     public void initialize_connections(InetSocketAddress[] addresses) {
         AcceptThread acceptThread = new AcceptThread(this, port);
         acceptThread.start();
-        for (int i = 0; i < numProc; i++) {
-            if (i < nodeID) {
+        int i = 0;
+        while (i < nodeID) {
+            try {
+                SctpChannel channel = SctpChannel.open();
+                channel.connect(addresses[i]);
+                Message msg = new Message(nodeID, MessageType.connect, "Connecting from " + nodeID, logClock.get());
+                msg.send(channel);
+                channelMap.put(i, channel);
+                ChannelThread channelThread = new ChannelThread(channel, this, i);
+                channelThread.start();
+            } catch (ConnectException e) {
+                System.out.println("Connection refused, retrying in 1 second...");
                 try {
-                    SctpChannel channel = SctpChannel.open();
-                    channel.connect(addresses[i]);
-                    Message msg = new Message(nodeID, MessageType.connect, "Connecting from " + nodeID, logClock.get());
-                    msg.send(channel);
-                    channelMap.put(i, channel);
-                    ChannelThread channelThread = new ChannelThread(channel, this, i);
-                    channelThread.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    Thread.sleep(1000);
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
+                    System.exit(0);
                 }
+                continue;
+            } catch (Exception e){
+                e.printStackTrace();
+                System.exit(0);
             }
         }
         try {
