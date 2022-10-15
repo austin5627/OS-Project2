@@ -5,7 +5,7 @@ export netid=$(whoami)
 
 # Root directory of your project
 if [[ $netid -eq "ash170000" ]]; then
-  export PROJDIR=$HOME/CS-6378/cs6378proj2/
+  export PROJDIR=$HOME/CS-6378/cs6378proj2
 else
   export PROJDIR=$HOME/cs6378/proj2/cs6378proj2/
 fi
@@ -24,6 +24,8 @@ export PROG=App
 export OUTPUTDIR=$PROJDIR/
 
 javac App.java
+#
+#scp -r ./out/production/cs6378proj2/ $netid@csgrads1.utdallas.edu:~/cs6378/proj2/
 
 n=0
 cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
