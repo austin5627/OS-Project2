@@ -22,6 +22,10 @@ public class ChannelThread extends Thread {
             while (true) {
                 // listen for msg
                 Message message = Message.receiveMessage(sc);
+                if (message == null) {
+                    System.out.println("Message is null");
+                    continue;
+                }
                 if (message.msgType == MessageType.connect){
                     continue;
                 }
