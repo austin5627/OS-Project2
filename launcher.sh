@@ -17,20 +17,22 @@ export CONFIGLOCAL=./config.txt
 export BINDIR=$PROJDIR
 
 # Your main project class
-export PROG=Node
+export PROG=App
 
 # Directory to place log files
 # ends with a slash
 export OUTPUTDIR=$PROJDIR/
 
+javac App.java
+
 n=0
 cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
 (
-    read -r i
+    read i
     echo "$i"
     while [[ $n -lt $i ]]
     do
-    	read -r line
+    	read line
     	node=$( echo "$line "| awk '{ print $1 }' )
     	host=$( echo "$line "| awk '{ print $2 }' )
     	port=$( echo "$line "| awk '{ print $3 }' )
@@ -40,6 +42,3 @@ cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
         n=$(( n + 1 ))
     done
 )
-
-#javac Node.java Launcher.java
-#java Launcher
