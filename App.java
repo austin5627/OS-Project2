@@ -27,7 +27,7 @@ public class App {
         this.nodeID = nodeID;
         this.portNum = portNum;
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
-        System.out.println("");
+        System.out.println("Node " + nodeID + " is up and running");
     }
 
     public void load_config(String filename, int nodeID) {

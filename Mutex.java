@@ -40,6 +40,7 @@ public class Mutex {
                 ChannelThread channelThread = new ChannelThread(channel, this, i);
                 channelThread.start();
                 i++;
+                System.out.println("Established connection with " + i);
             } catch (ConnectException e) {
                 System.out.println("Connection refused, retrying in 1 second...");
                 try {
@@ -54,11 +55,13 @@ public class Mutex {
                 System.exit(0);
             }
         }
+        System.out.println("All outgoing connections established");
         try {
             acceptThread.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        System.out.println("All incoming connections established");
     }
 
     public void broadcast(Message msg) {
