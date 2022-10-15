@@ -41,7 +41,7 @@ public class Mutex {
                 i++;
                 System.out.println("Established connection with " + i);
             } catch (ConnectException e) {
-                System.out.println("Connection refused, retrying in 1 second...");
+                System.out.println("Connection refused from " + i + ", retrying in 1 second...");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ie) {
