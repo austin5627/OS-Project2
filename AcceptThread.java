@@ -31,6 +31,7 @@ public class AcceptThread extends Thread {
                 System.out.println("\tnumConnections = " + numConnections);
                 System.out.println("\tnumProc = " + mutex.numProc);
                 System.out.println("\tExpected numConnections = " + (mutex.numProc - mutex.nodeID - 1));
+                System.out.println("acceptNew = " + (numConnections < (mutex.numProc - mutex.nodeID - 1) + " ???? " + acceptNew));
             }
             System.out.println("Finished accepting new connections");
         } catch (Exception e) {
