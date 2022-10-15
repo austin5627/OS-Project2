@@ -26,7 +26,7 @@ public class AcceptThread extends Thread {
                 ct.start();
                 numConnections++;
                 mutex.addConnection(connected_id, sc);
-                acceptNew = numConnections >= (mutex.numProc - mutex.nodeID - 1);
+                acceptNew = numConnections < (mutex.numProc - mutex.nodeID - 1);
                 System.out.println("Connection from " + connected_id);
                 System.out.println("\tnumConnections = " + numConnections);
                 System.out.println("\tnumProc = " + mutex.numProc);
