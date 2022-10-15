@@ -26,5 +26,5 @@ cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
     done
 )
 
-
+killall xterm
 echo "Cleanup complete"

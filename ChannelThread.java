@@ -22,6 +22,9 @@ public class ChannelThread extends Thread {
             while (true) {
                 // listen for msg
                 Message message = Message.receiveMessage(sc);
+                if (message.msgType == MessageType.connect){
+                    continue;
+                }
                 mutex.updateClock(message.clock);
                 if (MessageType.request == message.msgType) {
                     Request req = new Request(message.sender, message.clock);
