@@ -31,6 +31,7 @@ public class App {
 
     public void load_config(String filename, int nodeID) {
         File configFile = new File(filename);
+        System.out.println(configFile.exists());
         try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
             Scanner scanner = new Scanner(line);
