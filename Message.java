@@ -85,7 +85,9 @@ public class Message implements Serializable
             channel.receive(buf, null, null);
             return Message.fromByteBuffer(buf);
         } catch (EOFException | AsynchronousCloseException ignored) {
+            ignored.printStackTrace();
             System.out.println("SHOULD NOT BE HERE");
+            System.exit(0);
         }
         catch (Exception e) {
             e.printStackTrace();
