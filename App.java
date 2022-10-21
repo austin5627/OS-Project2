@@ -76,7 +76,7 @@ public class App {
                 e.printStackTrace();
                 System.exit(0);
             }
-            int cs_execution_time = (int) Math.log(1 - Math.random()) * -MEAN_CS_EXECUTION_TIME;
+            int cs_execution_time = (int) Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME;
             requests++;
             System.out.println("Entering Critical Section for " + cs_execution_time + "ms");
             mutex.cs_enter();
