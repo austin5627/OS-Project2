@@ -37,7 +37,7 @@ public class ChannelThread extends Thread {
                     // Send reply
                     Message reply = new Message(mutex.nodeID, MessageType.reply, "REPLY", mutex.logClock.get());
                     reply.send(sc);
-                    mu
+                    mutex.updateClock();
                     System.out.println("Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
