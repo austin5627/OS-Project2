@@ -85,7 +85,7 @@ public class App {
             System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
             mutex.cs_enter();
             System.out.println("\033[47;41mEntering Critical Section\033[0m");
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter("./lock.txt", true))){
+            try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))){
                 writer.write(nodeID + "\n");
                 try {
                     Thread.sleep(cs_execution_time);
