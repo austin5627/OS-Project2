@@ -3,13 +3,13 @@
 # Change this to your netid
 netid=$(whoami)
 
-# Directory where the config file is located on your local system
-CONFIGLOCAL=./config.txt
+# Directory where the config file is located on the running system
+CONFIGREMOTE=./config.txt
 
 n=0
 
 
-cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
+cat $CONFIGREMOTE | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
 (
     read i
     echo $i
