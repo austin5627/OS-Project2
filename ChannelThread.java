@@ -42,6 +42,9 @@ public class ChannelThread extends Thread {
                 else if (MessageType.release == message.msgType) {
                     Request req = new Request(message.sender, message.clock);
                     mutex.pq.remove(req);
+                    synchronized (mutex) {
+                        mutex.notify();
+                    }
                 }
 
                 if (mutex.requestTime.get() < message.clock) {
