@@ -78,8 +78,9 @@ public class App {
             }
             int cs_execution_time = (int) (Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME);
             requests++;
-            System.out.println("Entering Critical Section for " + cs_execution_time + "ms");
+            System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
             mutex.cs_enter();
+            System.out.println("Entering Critical Section");
             try(BufferedWriter writer = new BufferedWriter(new FileWriter("~/lock.txt", true))){
                 writer.write(nodeID + "\n");
                 try {

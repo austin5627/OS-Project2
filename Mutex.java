@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class Mutex {
+public class Mutex extends Thread {
     public final AtomicInteger logClock = new AtomicInteger(0);
     public final AtomicInteger requestTime = new AtomicInteger(0);
     public final PriorityBlockingQueue<Request> pq = new PriorityBlockingQueue<>();
@@ -88,16 +88,19 @@ public class Mutex {
         pq.put(req);
         Message reqMsg = new Message(nodeID, MessageType.request, "REQUEST", req.clock);
         broadcast(reqMsg);
+        System.out.println("Broadcasted request");
         while(higherTimestamp.size() < numProc || pq.peek().compareTo(req) != 0) {
             try {
                 synchronized(this) {
                     wait();
+                    System.out.println("Woke up");
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(0);
             }
         }
+        System.out.println("All replies received");
     }
 
     public void cs_leave() {

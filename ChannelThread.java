@@ -33,9 +33,11 @@ public class ChannelThread extends Thread {
                 if (MessageType.request == message.msgType) {
                     Request req = new Request(message.sender, message.clock);
                     mutex.pq.put(req);
+                    System.out.println("Received request from " + message.sender);
                     // Send reply
                     Message reply = new Message(mutex.nodeID, MessageType.reply, "REPLY", mutex.logClock.get());
                     reply.send(sc);
+                    System.out.println("Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
                     Request req = new Request(message.sender, message.clock);
@@ -43,6 +45,7 @@ public class ChannelThread extends Thread {
                 }
 
                 if (mutex.requestTime.get() < message.clock) {
+                    System.out.println("Received message with higher clock value from " + message.sender);
                     mutex.higherTimestamp.add(message.sender);
                     synchronized (mutex) {
                         mutex.notify();
