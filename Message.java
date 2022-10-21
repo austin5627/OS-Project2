@@ -84,11 +84,8 @@ public class Message implements Serializable
             ByteBuffer buf = ByteBuffer.allocateDirect(Message.MAX_MSG_SIZE);
             channel.receive(buf, null, null);
             return Message.fromByteBuffer(buf);
-        } catch (EOFException | AsynchronousCloseException ignored) {
-            ignored.printStackTrace();
-            System.out.println("SHOULD NOT BE HERE");
-            System.exit(0);
-        }
+        } catch (EOFException | AsynchronousCloseException ignored){}
+
         catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
