@@ -8,6 +8,7 @@ public class App {
     public int MEAN_INTER_REQUEST_DELAY;
     public int MEAN_CS_EXECUTION_TIME;
     public int NUM_REQUESTS;
+    public static final String LOGFILE = "./log.txt";
     public final Mutex mutex;
     public final int nodeID;
     public final int portNum;
@@ -20,6 +21,9 @@ public class App {
         int port = Integer.parseInt(args[2]);
         App app = new App(config_file, id, port);
         app.start();
+        if (app.nodeID == 0) {
+            System.out.println("Critical Section is mutually exclusive: " + App.checkLog());
+        }
     }
 
     public App(String config_file, int nodeID, int portNum) {
@@ -97,5 +101,22 @@ public class App {
             mutex.cs_leave();
             System.out.println("\033[47;41mLeaving Critical Section\033[0m");
         }
+    }
+
+    public static boolean checkLog(){
+        try {
+            BufferedReader in = new BufferedReader(new FileReader(LOGFILE));
+            String line;
+            while ((line = in.readLine()) != null) {
+                String nextLine = in.readLine();
+                if (!line.equals(nextLine)) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+        return true;
     }
 }
