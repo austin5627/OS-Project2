@@ -68,7 +68,7 @@ public class App {
     public void start() {
         int requests = 0;
         while (requests < NUM_REQUESTS) {
-            int delay = (int) Math.log(1 - Math.random()) * -MEAN_INTER_REQUEST_DELAY;
+            int delay = (int) (Math.log(1.0 - Math.random()) * -MEAN_INTER_REQUEST_DELAY);
             System.out.println("Non-critical section delay: " + delay);
             try {
                 Thread.sleep(delay);
