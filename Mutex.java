@@ -89,11 +89,11 @@ public class Mutex extends Thread {
         Message reqMsg = new Message(nodeID, MessageType.request, "REQUEST", req.clock);
         broadcast(reqMsg);
         System.out.println("Broadcasted request");
-        while(higherTimestamp.size() < numProc || pq.peek().compareTo(req) != 0) {
+        while(higherTimestamp.size() < numProc - 1 || pq.peek().compareTo(req) != 0) {
             try {
                 synchronized(this) {
                     wait();
-                    System.out.println("Woke up");
+                    System.out.println("Woke up: " + higherTimestamp.size() + " " + pq.toArray());
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

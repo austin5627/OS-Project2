@@ -15,4 +15,8 @@ public class Request implements Comparable<Request>{
             return Integer.compare(this.clock, r.clock);
         }
     }
+
+    public String toString() {
+        return "(ID:" + nodeID + ", C:" + clock + ")";
+    }
 }
