@@ -8,7 +8,7 @@ public class App {
     public int MEAN_INTER_REQUEST_DELAY;
     public int MEAN_CS_EXECUTION_TIME;
     public int NUM_REQUESTS;
-    public static final String LOGFILE = "./log.txt";
+    public static final String LOGFILE = "./LOCK.txt";
     public final Mutex mutex;
     public final int nodeID;
     public final int portNum;
@@ -20,6 +20,10 @@ public class App {
         int id = Integer.parseInt(args[1]);
         int port = Integer.parseInt(args[2]);
         App app = new App(config_file, id, port);
+        if (app.nodeID == 0) {
+            File file = new File(LOGFILE);
+            file.delete();
+        }
         app.start();
         if (app.nodeID == 0) {
             System.out.println("Critical Section is mutually exclusive: " + App.checkLog());
