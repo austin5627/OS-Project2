@@ -103,7 +103,7 @@ public class App {
             mutex.cs_leave();
             System.out.println("\033[47;42mLeaving Critical Section\033[0m");
         }
-        System.out.println("Finished all requests");
+        System.out.println("\033[0;44mFinished all requests\033[0m");
     }
 
     public static boolean checkLog(){
