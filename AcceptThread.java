@@ -17,6 +17,7 @@ public class AcceptThread extends Thread {
         try (SctpServerChannel ssc = SctpServerChannel.open()){
             InetSocketAddress addr = new InetSocketAddress(portNum); // Get address from port number
             ssc.bind(addr);//Bind server channel to address
+            acceptNew = numConnections < (mutex.numProc - mutex.nodeID - 1);
             while (acceptNew) {
                 SctpChannel sc = ssc.accept();
                 // Should get a message immediately from client with the nodeNum of the remote device
