@@ -98,7 +98,7 @@ public class Mutex extends Thread {
                 System.exit(0);
             }
         }
-        System.out.println("All replies received");
+        System.out.println("\033[0;44mFinished all requests\033[0m");
     }
 
     public void cs_leave() {
