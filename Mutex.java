@@ -3,6 +3,7 @@ import com.sun.nio.sctp.SctpChannel;
 import java.net.ConnectException;
 import java.net.InetSocketAddress;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.SortedMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -89,11 +90,11 @@ public class Mutex extends Thread {
         Message reqMsg = new Message(nodeID, MessageType.request, "REQUEST", req.clock);
         broadcast(reqMsg);
         System.out.println("Broadcasted request");
-        while(higherTimestamp.size() < numProc - 1 || pq.peek().compareTo(req) != 0) {
+        while(higherTimestamp.size() < numProc - 1 || (pq.peek() != null && pq.peek().compareTo(req) != 0)) {
             try {
                 synchronized(this) {
                     wait();
-//                    System.out.println("Woke up: " + higherTimestamp.size() + " " + pq.toArray());
+                    System.out.println("Woke up: " + higherTimestamp.size() + " " + pq.toArray());
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
