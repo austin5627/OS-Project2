@@ -95,7 +95,7 @@ public class App {
                 System.exit(0);
             }
             mutex.cs_leave();
-            System.out.println("\033[Leaving Critical Section");
+            System.out.println("\033[47;41mLeaving Critical Section\033[0m");
         }
     }
 }

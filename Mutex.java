@@ -67,7 +67,6 @@ public class Mutex extends Thread {
     }
 
     public void broadcast(Message msg) {
-        updateClock();
         for (SctpChannel channel : channelMap.values()) {
             try {
                 if (channel.isOpen()) {
@@ -105,7 +104,6 @@ public class Mutex extends Thread {
     public void cs_leave() {
         try {
             pq.take();
-
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.exit(0);
