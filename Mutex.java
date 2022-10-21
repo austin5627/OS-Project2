@@ -90,7 +90,9 @@ public class Mutex {
         broadcast(reqMsg);
         while(higherTimestamp.size() < numProc || pq.peek().compareTo(req) != 0) {
             try {
-                wait();
+                synchronized(this) {
+                    wait();
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(0);
