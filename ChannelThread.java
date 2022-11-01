@@ -37,7 +37,7 @@ public class ChannelThread extends Thread {
                     Message reply = new Message(mutex.nodeID, MessageType.reply, "REPLY", mutex.logClock.get());
                     reply.send(sc);
                     mutex.updateClock();
-                    //System.out.println("Sent reply to " + message.sender);
+                    System.out.println("Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
                     //System.out.println("Received release from " + message.sender + " removing from queue");
@@ -51,14 +51,13 @@ public class ChannelThread extends Thread {
                     synchronized (mutex) {
                         mutex.notify();
                     }
-                    sc.close();
                     mutex.removeConnection(connected_id);
                     System.out.println("Received terminate from " + message.sender);
                     break;
                 }
 
                 if (mutex.requestTime.get() < message.clock) {
-                    //System.out.println("Received message with higher clock value from " + message.sender);
+                    System.out.println("Received message with higher clock value from " + message.sender);
                     mutex.higherTimestamp.add(message.sender);
                     synchronized (mutex) {
                         mutex.notify();
