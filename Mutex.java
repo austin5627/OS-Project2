@@ -92,7 +92,7 @@ public class Mutex extends Thread {
             try {
                 synchronized(this) {
                     wait();
-                    System.out.println("Woke up: " + higherTimestamp.size() + " " + Arrays.toString(pq.toArray()));
+                    // System.out.println("Woke up: " + higherTimestamp.size() + " " + Arrays.toString(pq.toArray()));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -130,6 +130,7 @@ public class Mutex extends Thread {
     }
 
     public void closeConnections() {
+        System.out.println("Closing connections");
         for (SctpChannel c : channelMap.values()) {
             try {
                 c.close();
