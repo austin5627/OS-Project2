@@ -32,6 +32,7 @@ public class ChannelThread extends Thread {
                 if (MessageType.request == message.msgType) {
                     Request req = new Request(message.sender, message.clock);
                     mutex.pq.put(req);
+                    System.out.println("Received request from " + message.sender);
                     // Send reply
                     Message reply = new Message(mutex.nodeID, MessageType.reply, "REPLY", mutex.logClock.get());
                     reply.send(sc);
