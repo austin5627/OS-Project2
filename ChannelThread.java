@@ -54,9 +54,8 @@ public class ChannelThread extends Thread {
                     }
                     System.out.println("Received terminate from " + message.sender);
                 }
-
                 if (mutex.requestTime.get() < message.clock) {
-                    System.out.println("Received message with higher clock value from " + message.sender);
+                    // System.out.println("Received message with higher clock value from " + message.sender);
                     mutex.higherTimestamp.add(message.sender);
                     synchronized (mutex) {
                         mutex.notify();

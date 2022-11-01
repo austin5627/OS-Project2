@@ -119,7 +119,7 @@ public class Mutex extends Thread {
         if (numAlive.get() > 1) {
             try {
                 synchronized (this) {
-                    wait(3000);
+                    wait();
                     System.out.println("Num alive: " + numAlive.get());
                 }
             } catch (InterruptedException e) {
