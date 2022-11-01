@@ -19,11 +19,10 @@ public class ChannelThread extends Thread {
 
             ByteBuffer buf = ByteBuffer.allocateDirect(Message.MAX_MSG_SIZE); // Messages are received over SCTP using ByteBuffer
             sc.configureBlocking(true); // Ensures that the channel will block until a message is received
-            while (true) {
+            while (sc.isOpen()) {
                 // listen for msg
                 Message message = Message.receiveMessage(sc);
                 if (message == null) {
-                    System.out.println("Message is null");
                     continue;
                 }
                 if (message.msgType == MessageType.connect){

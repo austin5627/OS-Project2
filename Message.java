@@ -4,6 +4,7 @@ import com.sun.nio.sctp.SctpChannel;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousCloseException;
+import java.nio.channels.ClosedChannelException;
 import java.util.List;
 
 // Enumeration to store message types
@@ -84,7 +85,7 @@ public class Message implements Serializable
             ByteBuffer buf = ByteBuffer.allocateDirect(Message.MAX_MSG_SIZE);
             channel.receive(buf, null, null);
             return Message.fromByteBuffer(buf);
-        } catch (EOFException | AsynchronousCloseException ignored){}
+        } catch (EOFException | ClosedChannelException ignored){}
         catch (Exception e) {
             e.printStackTrace();
             System.exit(0);
