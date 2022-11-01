@@ -47,11 +47,11 @@ public class ChannelThread extends Thread {
                     }
                 }
                 else if (MessageType.terminate == message.msgType) {
-                    mutex.numAlive.decrementAndGet();
-                    synchronized (mutex) {
-                        mutex.notify();
+                    if (mutex.numAlive.decrementAndGet() == 1) {
+                        synchronized (mutex) {
+                            mutex.notify();
+                        }
                     }
-                    mutex.removeConnection(connected_id);
                     System.out.println("Received terminate from " + message.sender);
                 }
 

@@ -116,7 +116,7 @@ public class Mutex extends Thread {
         // Broadcast terminate message to all nodes
         Message terminateMsg = new Message(nodeID, MessageType.terminate, "TERMINATE", logClock.incrementAndGet());
         broadcast(terminateMsg);
-        while (numAlive.get() > 1) {
+        if (numAlive.get() > 1) {
             try {
                 synchronized (this) {
                     wait(3000);
