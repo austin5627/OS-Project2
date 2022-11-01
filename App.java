@@ -25,7 +25,6 @@ public class App {
             file.delete();
         }
         app.start();
-        System.out.println("Critical Section is mutually exclusive: " + App.checkLog());
     }
 
     public App(String config_file, int nodeID, int portNum) {
@@ -104,6 +103,10 @@ public class App {
             System.out.println("\033[47;42mLeaving Critical Section\033[0m");
         }
         System.out.println("\033[0;44mFinished all requests\033[0m");
+        mutex.terminate();
+        if (nodeID == 0) {
+            System.out.println("Critical Section is mutually exclusive: " + App.checkLog());
+        }
     }
 
     public static boolean checkLog(){

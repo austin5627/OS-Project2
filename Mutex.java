@@ -10,6 +10,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Mutex extends Thread {
     public final AtomicInteger logClock = new AtomicInteger(0);
     public final AtomicInteger requestTime = new AtomicInteger(0);
+    public AtomicInteger numAlive;
     public final PriorityBlockingQueue<Request> pq = new PriorityBlockingQueue<>();
     public final HashSet<Integer> higherTimestamp = new HashSet<>();
     public final int numProc;
@@ -20,6 +21,7 @@ public class Mutex extends Thread {
     public Mutex(int numProc, int nodeID, InetSocketAddress[] addresses, int port) {
         this.nodeID = nodeID;
         this.numProc = numProc;
+        this.numAlive.set(numProc);
         this.port = port;
         initialize_connections(addresses);
     }
@@ -111,6 +113,20 @@ public class Mutex extends Thread {
         broadcast(releaseMsg);
     }
 
+    public void terminate() {
+        // Broadcast terminate message to all nodes
+        Message terminateMsg = new Message(nodeID, MessageType.terminate, "TERMINATE", logClock.incrementAndGet());
+        broadcast(terminateMsg);
+        while (numAlive.get() > 1) {
+            try {
+                synchronized (this) {
+                    wait();
+                }
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 
     public boolean addConnection(int nodeID, SctpChannel channel) {
         channelMap.put(nodeID, channel);

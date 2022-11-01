@@ -7,7 +7,7 @@ import java.nio.channels.AsynchronousCloseException;
 import java.util.List;
 
 // Enumeration to store message types
-enum MessageType{connect, release, request, reply}
+enum MessageType{connect, release, request, reply, terminate};
 
 // Object to store message passing between nodes
 // Message class can be modified to incoroporate all fields than need to be passed

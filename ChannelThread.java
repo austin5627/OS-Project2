@@ -47,6 +47,13 @@ public class ChannelThread extends Thread {
                         mutex.notify();
                     }
                 }
+                else if (MessageType.terminate == message.msgType) {
+                    mutex.numAlive.decrementAndGet();
+                    synchronized (mutex) {
+                        mutex.notify();
+                    }
+                    break;
+                }
 
                 if (mutex.requestTime.get() < message.clock) {
                     //System.out.println("Received message with higher clock value from " + message.sender);
@@ -55,8 +62,6 @@ public class ChannelThread extends Thread {
                         mutex.notify();
                     }
                 }
-
-
             }
         } catch (ClosedChannelException e){
             System.out.println("Received all messages");
