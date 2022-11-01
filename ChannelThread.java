@@ -53,7 +53,6 @@ public class ChannelThread extends Thread {
                     }
                     mutex.removeConnection(connected_id);
                     System.out.println("Received terminate from " + message.sender);
-                    break;
                 }
 
                 if (mutex.requestTime.get() < message.clock) {
