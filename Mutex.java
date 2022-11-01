@@ -116,6 +116,7 @@ public class Mutex extends Thread {
         // Broadcast terminate message to all nodes
         Message terminateMsg = new Message(nodeID, MessageType.terminate, "TERMINATE", logClock.incrementAndGet());
         broadcast(terminateMsg);
+        closeConnections();
         while (numAlive.get() > 1) {
             try {
                 synchronized (this) {
@@ -127,8 +128,22 @@ public class Mutex extends Thread {
         }
     }
 
+    public void closeConnections() {
+        for (SctpChannel c : channelMap.values()) {
+            try {
+                c.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void addConnection(int nodeID, SctpChannel channel) {
         channelMap.put(nodeID, channel);
+    }
+
+    public void removeConnection(int nodeID) {
+        channelMap.remove(nodeID);
     }
 
     public void updateClock(int msgClock) {

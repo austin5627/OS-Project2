@@ -52,6 +52,8 @@ public class ChannelThread extends Thread {
                     synchronized (mutex) {
                         mutex.notify();
                     }
+                    sc.close();
+                    mutex.removeConnection(connected_id);
                     break;
                 }
 
