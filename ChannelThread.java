@@ -47,12 +47,11 @@ public class ChannelThread extends Thread {
                     }
                 }
                 else if (MessageType.terminate == message.msgType) {
-                    if (mutex.numAlive.decrementAndGet() == 1) {
-                        synchronized (mutex) {
-                            mutex.notify();
-                        }
+                    synchronized (mutex) {
+                        mutex.numAlive.getAndDecrement();
+                        mutex.canTerminate.set(true);
+                        mutex.notify();
                     }
-                    System.out.println("Received terminate from " + message.sender);
                 }
                 if (mutex.requestTime.get() < message.clock) {
                     // System.out.println("Received message with higher clock value from " + message.sender);

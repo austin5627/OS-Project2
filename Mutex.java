@@ -5,12 +5,14 @@ import java.net.InetSocketAddress;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Mutex extends Thread {
     public final AtomicInteger logClock = new AtomicInteger(0);
     public final AtomicInteger requestTime = new AtomicInteger(0);
     public AtomicInteger numAlive;
+    public final AtomicBoolean canTerminate = new AtomicBoolean(false);
     public final PriorityBlockingQueue<Request> pq = new PriorityBlockingQueue<>();
     public final HashSet<Integer> higherTimestamp = new HashSet<>();
     public final int numProc;
@@ -115,15 +117,29 @@ public class Mutex extends Thread {
     public void terminate() {
         // Broadcast terminate message to all nodes
         Message terminateMsg = new Message(nodeID, MessageType.terminate, "TERMINATE", logClock.incrementAndGet());
-        broadcast(terminateMsg);
-        if (numAlive.get() > 1) {
+        if (nodeID == 0)  {
+            while (numAlive.get() > 1) {
+                try {
+                    synchronized (this) {
+                        wait();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    System.exit(0);
+                }
+            }
+            broadcast(terminateMsg);
+        } else {
+            terminateMsg.send(channelMap.get(0));
             try {
                 synchronized (this) {
-                    wait();
-                    System.out.println("Num alive: " + numAlive.get());
+                    while(!canTerminate.get()) {
+                        wait();
+                    }
                 }
             } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+                e.printStackTrace();
+                System.exit(0);
             }
         }
         closeConnections();
