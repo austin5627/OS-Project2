@@ -21,7 +21,7 @@ public class Mutex extends Thread {
     public Mutex(int numProc, int nodeID, InetSocketAddress[] addresses, int port) {
         this.nodeID = nodeID;
         this.numProc = numProc;
-        this.numAlive.set(numProc);
+        this.numAlive = new AtomicInteger(numProc);
         this.port = port;
         initialize_connections(addresses);
     }
@@ -48,7 +48,6 @@ public class Mutex extends Thread {
                     ie.printStackTrace();
                     System.exit(0);
                 }
-                continue;
             } catch (Exception e){
                 e.printStackTrace();
                 System.exit(0);
@@ -128,9 +127,8 @@ public class Mutex extends Thread {
         }
     }
 
-    public boolean addConnection(int nodeID, SctpChannel channel) {
+    public void addConnection(int nodeID, SctpChannel channel) {
         channelMap.put(nodeID, channel);
-        return channelMap.size() == numProc;
     }
 
     public void updateClock(int msgClock) {
