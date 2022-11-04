@@ -88,9 +88,9 @@ public class Mutex extends Thread {
         requestTime.set(req.clock);
         higherTimestamp.clear();
         pq.put(req);
-        Message reqMsg = new Message(nodeID, MessageType.request, "REQUEST", req.clock);
+        Message reqMsg = new Message(nodeID, MessageType.request, req, req.clock);
         broadcast(reqMsg);
-        System.out.println("Broadcasted request at time " + System.currentTimeMillis());
+        System.out.println("Broadcasted request at time " + req.clock);
         System.out.println("Higher timestamps: " + Arrays.toString(higherTimestamp.toArray()) + " PQ: " + Arrays.toString(pq.toArray()));
         while(higherTimestamp.size() < numProc - 1 || (pq.peek() != null && pq.peek().compareTo(req) != 0)) {
             try {
@@ -108,13 +108,13 @@ public class Mutex extends Thread {
 
     public void cs_leave() {
         try {
-            pq.take();
+            Request req = pq.take();
+            Message releaseMsg = new Message(nodeID, MessageType.release, req, logClock.incrementAndGet());
+            broadcast(releaseMsg);
         } catch (InterruptedException e) {
             e.printStackTrace();
             System.exit(0);
         }
-        Message releaseMsg = new Message(nodeID, MessageType.release, "RELEASE", logClock.incrementAndGet());
-        broadcast(releaseMsg);
     }
 
     public void terminate() {

@@ -30,7 +30,7 @@ public class ChannelThread extends Thread {
                 }
                 mutex.updateClock(message.clock);
                 if (MessageType.request == message.msgType) {
-                    Request req = new Request(message.sender, message.clock);
+                    Request req = (Request) message.message;
                     mutex.pq.put(req);
                     // System.out.println("Received request from " + message.sender);
                     // Send reply
@@ -40,8 +40,9 @@ public class ChannelThread extends Thread {
                     // System.out.println("Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
-                    //System.out.println("Received release from " + message.sender + " removing from queue");
-                    mutex.pq.remove();
+                    System.out.println("Received release from " + message.sender + " removing from queue");
+                    Request req = (Request) message.message;
+                    mutex.pq.remove(req);
                     synchronized (mutex) {
                         mutex.notify();
                     }
