@@ -95,7 +95,7 @@ public class App {
 //                mutex.cs_enter();
 //            }
             mutex.cs_enter();
-            System.out.println("\033[47;41mEntering Critical Section\033[0m");
+            System.out.println("\033[47;41mEntering Critical Section\033[0m" + requests + " at " + System.currentTimeMillis());
             try{
                 BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true));
                 writer.write(nodeID + ": " + requests + " ENTER\n");
@@ -116,11 +116,10 @@ public class App {
 //            if (requests == error_request && nodeID == 0) {
 //                System.out.println("\033[47;42mLeaving Critical Section after illegal enter during request " + requests + "\033[0m");
 //            } else {
-                mutex.cs_leave();
+//                mutex.cs_leave();
 //            }
-
-
-            System.out.println("\033[47;42mLeaving Critical Section\033[0m");
+            mutex.cs_leave();
+            System.out.println("\033[47;42mLeaving Critical Section\033[0m " + requests + " at " + System.currentTimeMillis());
         }
         System.out.println("\033[0;44mFinished all requests\033[0m");
         mutex.terminate();
