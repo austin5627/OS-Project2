@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.InetSocketAddress;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -75,6 +76,7 @@ public class App {
 
     public void start() {
         int requests = 0;
+        int error_request = (int) (Math.random() * NUM_REQUESTS);
         while (requests < NUM_REQUESTS) {
             int delay = (int) (Math.log(1.0 - Math.random()) * -MEAN_INTER_REQUEST_DELAY);
             System.out.println("Non-critical section delay: " + delay);
@@ -87,7 +89,10 @@ public class App {
             int cs_execution_time = (int) (Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME);
             requests++;
             System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
-            mutex.cs_enter();
+            if (requests != error_request) {
+                mutex.cs_enter();
+                System.out.println("Simulating error in ");
+            }
             System.out.println("\033[47;41mEntering Critical Section\033[0m");
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))){
                 writer.write(nodeID + "\n");
