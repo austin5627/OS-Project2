@@ -52,7 +52,7 @@ public class App {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        logger.setLevel(Level.INFO);
+        logger.setLevel(Level.);
     }
 
     public void load_config(String filename, int nodeID) {
