@@ -1,5 +1,5 @@
 
-public class Request implements Comparable<Request>{
+public class Request implements Comparable<Request>, Serializable {
     public final int nodeID;
     public final int clock;
     public Request(int nodeID, int clock) {
