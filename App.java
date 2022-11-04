@@ -98,7 +98,7 @@ public class App {
             System.out.println("\033[47;41mEntering Critical Section\033[0m " + requests + " at " + System.currentTimeMillis());
             try{
                 BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true));
-                writer.write(nodeID + ": " + requests + " ENTER\n");
+                writer.write(nodeID + " " + requests + " ENTER\n");
                 writer.close();
                 try {
                     Thread.sleep(cs_execution_time);
@@ -107,7 +107,7 @@ public class App {
                     System.exit(0);
                 }
                 writer = new BufferedWriter(new FileWriter(LOGFILE, true));
-                writer.write(nodeID + ": " + requests + " EXIT\n");
+                writer.write(nodeID + " " + requests + " EXIT\n");
                 writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -124,20 +124,32 @@ public class App {
         System.out.println("\033[0;44mFinished all requests\033[0m");
         mutex.terminate();
         if (nodeID == 0) {
-            System.out.println("Critical Section is mutually exclusive: " + App.checkLog());
+            System.out.println("Critical Section is mutually exclusive: " + checkLog());
         }
     }
 
-    public static boolean checkLog(){
+    public boolean checkLog(){
         try {
             BufferedReader in = new BufferedReader(new FileReader(LOGFILE));
             String line;
+            int[] last_request = new int[mutex.numProc];
+            for (int i = 0; i < mutex.numProc; i++) {
+                last_request[i] = 0;
+            }
             while ((line = in.readLine()) != null) {
                 String nextLine = in.readLine();
-                if (!line.substring(0,1).equals(nextLine.substring(0,1))) {
-                    System.out.println("Problem at line: " + line + " and " + nextLine);
+                Scanner s1 = new Scanner(line);
+                Scanner s2 = new Scanner(nextLine);
+                int node_l1 = s1.nextInt();
+                int node_l2 = s2.nextInt();
+                int request_l1 = s1.nextInt();
+                int request_l2 = s2.nextInt();
+                if (node_l1 != node_l2 || request_l1 != request_l2 || request_l1 != last_request[node_l1] + 1
+                        || !s1.next().equals("ENTER") || !s2.next().equals("EXIT")) {
+                    System.out.println("Problem with line " + line + " and " + nextLine);
                     return false;
                 }
+                last_request[node_l1] = request_l1;
             }
         } catch (IOException e) {
             e.printStackTrace();

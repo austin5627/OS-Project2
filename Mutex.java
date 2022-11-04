@@ -91,6 +91,7 @@ public class Mutex extends Thread {
         Message reqMsg = new Message(nodeID, MessageType.request, "REQUEST", req.clock);
         broadcast(reqMsg);
         System.out.println("Broadcasted request at time " + System.currentTimeMillis());
+        System.out.println("Higher timestamps: " + Arrays.toString(higherTimestamp.toArray()) + " PQ: " + Arrays.toString(pq.toArray()));
         while(higherTimestamp.size() < numProc - 1 || (pq.peek() != null && pq.peek().compareTo(req) != 0)) {
             try {
                 synchronized(this) {
