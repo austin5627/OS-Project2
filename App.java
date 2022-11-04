@@ -45,7 +45,7 @@ public class App {
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
         logger.log(Level.FINE, "Node " + nodeID + " is up and running");
         try {
-            FileHandler fh = new FileHandler("~/App.log");
+            FileHandler fh = new FileHandler("App.log");
             SimpleFormatter fmt = new SimpleFormatter();
             fh.setFormatter(fmt);
             logger.addHandler(fh);
@@ -57,7 +57,7 @@ public class App {
 
     public void load_config(String filename, int nodeID) {
         File configFile = new File(filename);
-        logger.log(Level.FINE, "" +configFile.exists());
+        logger.log(Level.FINE, "" + configFile.exists());
         try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
             while(line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
