@@ -1,4 +1,5 @@
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Request implements Comparable<Request>, Serializable {
     public final int nodeID;
@@ -15,6 +16,19 @@ public class Request implements Comparable<Request>, Serializable {
         } else {
             return Integer.compare(this.clock, r.clock);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Request request = (Request) o;
+        return nodeID == request.nodeID && clock == request.clock;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nodeID, clock);
     }
 
     public String toString() {
