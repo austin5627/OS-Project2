@@ -91,20 +91,16 @@ public class Mutex extends Thread {
         pq.put(req);
         Message reqMsg = new Message(nodeID, MessageType.request, req, req.clock);
         broadcast(reqMsg);
-        System.out.println("Broadcasted request at time " + req.clock);
-        System.out.println("Higher timestamps: " + Arrays.toString(higherTimestamp.toArray()) + " PQ: " + Arrays.toString(pq.toArray()));
         while(higherTimestamp.size() < numProc - 1 || (pq.peek() != null && pq.peek().compareTo(req) != 0)) {
             try {
                 synchronized(this) {
                     wait();
-//                    System.out.println("Woke up: " + higherTimestamp.size() + " " + Arrays.toString(pq.toArray()));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(0);
             }
         }
-        System.out.println("READY: " + Arrays.toString(higherTimestamp.toArray()) + " " + Arrays.toString(pq.toArray()));
     }
 
     public void cs_leave() {

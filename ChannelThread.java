@@ -40,11 +40,9 @@ public class ChannelThread extends Thread {
                     // System.out.println("Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
-                    System.out.println("Received release from " + message.sender + " removing from queue");
+//                    System.out.println("Received release from " + message.sender + " removing from queue");
                     Request req = (Request) message.message;
-                    if (mutex.pq.remove(req)) {
-                        System.out.println("Removed request from queue");
-                    } else {
+                    if (!mutex.pq.remove(req)) {
                         System.out.println("Request not found in queue");
                     }
                     synchronized (mutex) {
@@ -59,7 +57,7 @@ public class ChannelThread extends Thread {
                     }
                 }
                 if (mutex.requestTime.get() < message.clock) {
-                     System.out.println("Received message with higher clock value from " + message.sender);
+//                     System.out.println("Received message with higher clock value from " + message.sender);
                     mutex.higherTimestamp.add(message.sender);
                     synchronized (mutex) {
                         mutex.notify();
