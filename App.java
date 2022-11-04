@@ -89,27 +89,29 @@ public class App {
             int cs_execution_time = (int) (Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME);
             requests++;
             System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
-            if (requests != error_request) {
+            if (requests != error_request && nodeID == 0) {
                 mutex.cs_enter();
-                System.out.println("\033[47;41mERROR: entering critical section without permission\033[0m");
+            } else {
+                System.out.println("\033[47;41mERROR: entering critical section without permission during request " + requests + "\033[0m");
             }
             System.out.println("\033[47;41mEntering Critical Section\033[0m");
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))){
-                writer.write(nodeID + "\n");
+                writer.write(nodeID + ": " + requests + " ENTER\n");
                 try {
                     Thread.sleep(cs_execution_time);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
                 }
-                writer.write(nodeID + "\n");
+                writer.write(nodeID + ": " + requests + " EXIT\n");
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(0);
             }
-            if (requests != error_request) {
+            if (requests != error_request && nodeID == 0) {
                 mutex.cs_leave();
-                System.out.println("\033[47;42mLeaving Critical Section after illegal enter\033[0m");
+            } else {
+                System.out.println("\033[47;42mLeaving Critical Section after illegal enter during request " + requests + "\033[0m");
             }
             System.out.println("\033[47;42mLeaving Critical Section\033[0m");
         }
@@ -126,7 +128,7 @@ public class App {
             String line;
             while ((line = in.readLine()) != null) {
                 String nextLine = in.readLine();
-                if (!line.equals(nextLine)) {
+                if (!line.substring(0,1).equals(nextLine.substring(0,1))) {
                     return false;
                 }
             }
