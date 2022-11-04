@@ -2,8 +2,10 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
 public class App {
@@ -36,18 +38,26 @@ public class App {
     }
 
     public App(String config_file, int nodeID, int portNum) {
-        System.out.println("Starting node " + nodeID + " on port " + portNum);
+        logger.log(Level.FINE, "Starting node " + nodeID + " on port " + portNum);
         load_config(config_file, nodeID);
         this.nodeID = nodeID;
         this.portNum = portNum;
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
-        System.out.println("Node " + nodeID + " is up and running");
+        logger.log(Level.FINE, "Node " + nodeID + " is up and running");
+        try {
+            FileHandler fh = new FileHandler("~/App.log");
+            SimpleFormatter fmt = new SimpleFormatter();
+            fh.setFormatter(fmt);
+            logger.addHandler(fh);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         logger.setLevel(Level.INFO);
     }
 
     public void load_config(String filename, int nodeID) {
         File configFile = new File(filename);
-        System.out.println(configFile.exists());
+        logger.log(Level.FINE, configFile.exists());
         try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
             while(line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
@@ -88,7 +98,7 @@ public class App {
         startTime = System.currentTimeMillis();
         while (requests < NUM_REQUESTS) {
             int delay = (int) (Math.log(1.0 - Math.random()) * -MEAN_INTER_REQUEST_DELAY);
-            System.out.println("Non-critical section delay: " + delay);
+            logger.log(Level.FINE, "Non-critical section delay: " + delay);
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
@@ -97,10 +107,10 @@ public class App {
             }
             int cs_execution_time = (int) (Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME);
             requests++;
-            System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
+            logger.log(Level.FINE, "Requesting to enter Critical Section for " + cs_execution_time + "ms");
             long cs_enter_time = System.currentTimeMillis();
             mutex.cs_enter();
-            System.out.println("\033[37;41mEntering Critical Section\033[0m " + requests);
+            logger.log(Level.FINE, "\033[37;41mEntering Critical Section\033[0m " + requests);
             try{
                 BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true));
                 writer.write(nodeID + " " + requests + " ENTER\n");
@@ -122,9 +132,9 @@ public class App {
             long response_time = System.currentTimeMillis() - cs_enter_time;
             logger.info("Response time: " + response_time);
             totalResponseTime += response_time;
-            System.out.println("\033[37;42mLeaving Critical Section\033[0m  ");
+            logger.log(Level.FINE, "\033[37;42mLeaving Critical Section\033[0m  ");
         }
-        System.out.println("\033[0;44mFinished all requests\033[0m");
+        logger.log(Level.FINE, "\033[0;44mFinished all requests\033[0m");
         long totalResponseTimeAll = mutex.terminate(totalResponseTime);
         if (nodeID == 0) {
             double avgResponseTime = (double) totalResponseTimeAll / (double) (this.NUM_REQUESTS * this.mutex.numProc);
@@ -136,6 +146,7 @@ public class App {
                 writer.write("Response Time: " + avgResponseTime + " ms\nThroughput: " + throughput * 1000 +
                         " requests per second\nMean inter-request delay: " + MEAN_INTER_REQUEST_DELAY +
                         "ms\nMean CS execustion time: " + MEAN_CS_EXECUTION_TIME + " ms\n");
+                writer.close();
             } catch (IOException e) {
                 System.exit(0);
             }
