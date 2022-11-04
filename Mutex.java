@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 public class Mutex extends Thread {
     public final AtomicInteger logClock = new AtomicInteger(0);
@@ -20,6 +21,7 @@ public class Mutex extends Thread {
     public final int nodeID;
     public final int port;
     private final ConcurrentHashMap<Integer, SctpChannel> channelMap = new ConcurrentHashMap<>();
+    public final AtomicLong respTime = new AtomicLong(0);
 
     public Mutex(int numProc, int nodeID, InetSocketAddress[] addresses, int port) {
         this.nodeID = nodeID;
@@ -114,9 +116,9 @@ public class Mutex extends Thread {
         }
     }
 
-    public void terminate() {
+    public long terminate(long totalResponseTime) {
         // Broadcast terminate message to all nodes
-        Message terminateMsg = new Message(nodeID, MessageType.terminate, "TERMINATE", logClock.incrementAndGet());
+        Message terminateMsg = new Message(nodeID, MessageType.terminate, totalResponseTime, logClock.incrementAndGet());
         if (nodeID == 0)  {
             while (numAlive.get() > 1) {
                 try {
@@ -143,6 +145,8 @@ public class Mutex extends Thread {
             }
         }
         closeConnections();
+
+        return respTime.get() + totalResponseTime;
     }
 
     public void closeConnections() {

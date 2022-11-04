@@ -51,6 +51,7 @@ public class ChannelThread extends Thread {
                 }
                 else if (MessageType.terminate == message.msgType) {
                     synchronized (mutex) {
+                        mutex.respTime.addAndGet((long) message.message);
                         mutex.numAlive.getAndDecrement();
                         mutex.canTerminate.set(true);
                         mutex.notify();

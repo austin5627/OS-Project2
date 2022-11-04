@@ -14,6 +14,9 @@ public class App {
     public final int nodeID;
     public final int portNum;
     InetSocketAddress[] neighbors;
+    public long startTime;
+
+    public long totalResponseTime = 0;
 
 
     public static void main(String[] args) {
@@ -89,11 +92,8 @@ public class App {
             int cs_execution_time = (int) (Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME);
             requests++;
             System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
-            if (requests == error_request && nodeID == 0) {
-                System.out.println("\033[37;41mERROR: entering critical section without permission during request " + requests + "\033[0m");
-            } else {
-                mutex.cs_enter();
-            }
+            long cs_enter_time = System.currentTimeMillis();
+            mutex.cs_enter();
             System.out.println("\033[37;41mEntering Critical Section\033[0m " + requests);
             try{
                 BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true));
@@ -112,17 +112,19 @@ public class App {
                 e.printStackTrace();
                 System.exit(0);
             }
-            if (requests == error_request && nodeID == 0) {
-                System.out.println("\033[47;42mLeaving Critical Section after illegal enter during request " + requests + "\033[0m");
-            } else {
-                mutex.cs_leave();
-            }
+            mutex.cs_leave();
+            long response_time = System.currentTimeMillis() - cs_enter_time;
+            totalResponseTime += response_time;
             System.out.println("\033[37;42mLeaving Critical Section\033[0m  ");
         }
         System.out.println("\033[0;44mFinished all requests\033[0m");
-        mutex.terminate();
+        long totalResponseTimeAll = mutex.terminate(totalResponseTime);
         if (nodeID == 0) {
+            double avgResponseTime = (double) totalResponseTimeAll / (double) (this.mutex.numProc);
+            double throughput = (double) (this.mutex.numProc * this.NUM_REQUESTS) / (double) (System.currentTimeMillis() - startTime);
             System.out.println("Critical Section is mutually exclusive: " + checkLog());
+            System.out.println("Response Time: " + avgResponseTime);
+            System.out.println("Throughput: " + throughput);
         }
     }
 
