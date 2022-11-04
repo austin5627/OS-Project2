@@ -10,6 +10,7 @@ public class App {
     public int MEAN_CS_EXECUTION_TIME;
     public int NUM_REQUESTS;
     public static final String LOGFILE = "./LOCK.txt";
+    public static final String DATAFILE = "./DATA.txt";
     public final Mutex mutex;
     public final int nodeID;
     public final int portNum;
@@ -80,6 +81,7 @@ public class App {
     public void start() {
         int requests = 0;
         int error_request = (int) (Math.random() * NUM_REQUESTS);
+        startTime = System.currentTimeMillis();
         while (requests < NUM_REQUESTS) {
             int delay = (int) (Math.log(1.0 - Math.random()) * -MEAN_INTER_REQUEST_DELAY);
             System.out.println("Non-critical section delay: " + delay);
@@ -123,8 +125,13 @@ public class App {
             double avgResponseTime = (double) totalResponseTimeAll / (double) (this.mutex.numProc);
             double throughput = (double) (this.mutex.numProc * this.NUM_REQUESTS) / (double) (System.currentTimeMillis() - startTime);
             System.out.println("Critical Section is mutually exclusive: " + checkLog());
-            System.out.println("Response Time: " + avgResponseTime);
-            System.out.println("Throughput: " + throughput);
+            System.out.println("Response Time: " + avgResponseTime + " ms");
+            System.out.println("Throughput: " + throughput * 1000 + " requests per second");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATAFILE))) {
+                writer.write(avgResponseTime + " " + throughput + " " + MEAN_INTER_REQUEST_DELAY + " " + MEAN_CS_EXECUTION_TIME + "\n");
+            } catch (IOException e) {
+                System.exit(0);
+            }
         }
     }
 
