@@ -1,5 +1,5 @@
 # num_nodes inter_request cs_execution num_requests
-2 0 10 70
+2 0 100 30
 0 dc02 1234
 1 dc03 1233
 #2 dc04 1233
