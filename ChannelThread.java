@@ -42,7 +42,11 @@ public class ChannelThread extends Thread {
                 else if (MessageType.release == message.msgType) {
                     System.out.println("Received release from " + message.sender + " removing from queue");
                     Request req = (Request) message.message;
-                    mutex.pq.remove(req);
+                    if (mutex.pq.remove(req)) {
+                        System.out.println("Removed request from queue");
+                    } else {
+                        System.out.println("Request not found in queue");
+                    }
                     synchronized (mutex) {
                         mutex.notify();
                     }
