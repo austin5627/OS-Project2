@@ -14,7 +14,8 @@ public class Mutex extends Thread {
     public AtomicInteger numAlive;
     public final AtomicBoolean canTerminate = new AtomicBoolean(false);
     public final PriorityBlockingQueue<Request> pq = new PriorityBlockingQueue<>();
-    public final HashSet<Integer> higherTimestamp = new HashSet<>();
+    public final Set<Integer> higherTimestamp = ConcurrentHashMap.newKeySet();
+
     public final int numProc;
     public final int nodeID;
     public final int port;
