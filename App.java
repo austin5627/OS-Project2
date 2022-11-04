@@ -122,7 +122,7 @@ public class App {
         System.out.println("\033[0;44mFinished all requests\033[0m");
         long totalResponseTimeAll = mutex.terminate(totalResponseTime);
         if (nodeID == 0) {
-            double avgResponseTime = (double) totalResponseTimeAll / (double) (this.mutex.numProc);
+            double avgResponseTime = (double) totalResponseTimeAll / (double) (this.NUM_REQUESTS * this.mutex.numProc);
             double throughput = (double) (this.mutex.numProc * this.NUM_REQUESTS) / (double) (System.currentTimeMillis() - startTime);
             System.out.println("Critical Section is mutually exclusive: " + checkLog());
             System.out.println("Response Time: " + avgResponseTime + " ms");
