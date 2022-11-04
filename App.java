@@ -47,8 +47,8 @@ public class App {
         try {
             FileHandler fh = new FileHandler("App.log");
             SimpleFormatter fmt = new SimpleFormatter();
-             java.util.logging.SimpleFormatter.format = "[%4$-7s] %5$s %n";
-            fh.setFormatter(fmt);
+            System.setProperty("java.util.logging.SimpleFormatter.format",
+                      "[%4$-7s] %5$s %n");fh.setFormatter(fmt);
             logger.addHandler(fh);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -140,9 +140,9 @@ public class App {
         if (nodeID == 0) {
             double avgResponseTime = (double) totalResponseTimeAll / (double) (this.NUM_REQUESTS * this.mutex.numProc);
             double throughput = (double) (this.mutex.numProc * this.NUM_REQUESTS) / (double) (System.currentTimeMillis() - startTime);
-            //System.out.println("Critical Section is mutually exclusive: " + checkLog());
-            //System.out.println("Response Time: " + avgResponseTime + " ms");
-            //System.out.println("Throughput: " + throughput * 1000 + " requests per second");
+            System.out.println("Critical Section is mutually exclusive: " + checkLog());
+            System.out.println("Response Time: " + avgResponseTime + " ms");
+            System.out.println("Throughput: " + throughput * 1000 + " requests per second");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATAFILE))) {
                 writer.write("Mutually Exclusive: " + checkLog() + "\n\nResponse Time: " + avgResponseTime + " ms\nThroughput: " + throughput * 1000 +
                         " requests per second\nMean inter-request delay: " + MEAN_INTER_REQUEST_DELAY +
