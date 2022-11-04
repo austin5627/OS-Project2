@@ -86,6 +86,7 @@ public class Mutex extends Thread {
     public void cs_enter() {
         Request req = new Request(nodeID, logClock.incrementAndGet());
         requestTime.set(req.clock);
+        higherTimestamp.clear();
         pq.put(req);
         Message reqMsg = new Message(nodeID, MessageType.request, "REQUEST", req.clock);
         broadcast(reqMsg);
@@ -102,7 +103,6 @@ public class Mutex extends Thread {
             }
         }
         System.out.println("READY: " + Arrays.toString(higherTimestamp.toArray()) + " " + Arrays.toString(pq.toArray()));
-        higherTimestamp.clear();
     }
 
     public void cs_leave() {

@@ -135,6 +135,7 @@ public class App {
             while ((line = in.readLine()) != null) {
                 String nextLine = in.readLine();
                 if (!line.substring(0,1).equals(nextLine.substring(0,1))) {
+                    System.out.println("Problem at line: " + line + " and " + nextLine);
                     return false;
                 }
             }
