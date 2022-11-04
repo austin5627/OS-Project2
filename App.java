@@ -96,7 +96,7 @@ public class App {
             }
             System.out.println("\033[47;41mEntering Critical Section\033[0m");
             try{
-                BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))
+                BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true));
                 writer.write(nodeID + ": " + requests + " ENTER\n");
                 writer.close();
                 try {
