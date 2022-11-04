@@ -57,7 +57,7 @@ public class App {
 
     public void load_config(String filename, int nodeID) {
         File configFile = new File(filename);
-        logger.log(Level.FINE, configFile.exists());
+        logger.log(Level.FINE, "" +configFile.exists());
         try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
             while(line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
@@ -171,7 +171,7 @@ public class App {
                 int request_l2 = s2.nextInt();
                 if (node_l1 != node_l2 || request_l1 != request_l2 || request_l1 != last_request[node_l1] + 1
                         || !s1.next().equals("ENTER") || !s2.next().equals("EXIT")) {
-                    System.out.println("Problem with line " + line + " and " + nextLine);
+                    logger.log(Level.WARNING, "Problem with line " + line + " and " + nextLine);
                     return false;
                 }
                 last_request[node_l1] = request_l1;
