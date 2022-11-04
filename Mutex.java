@@ -102,6 +102,7 @@ public class Mutex extends Thread {
             }
         }
         System.out.println("READY: " + Arrays.toString(higherTimestamp.toArray()) + " " + Arrays.toString(pq.toArray()));
+        higherTimestamp.clear();
     }
 
     public void cs_leave() {
