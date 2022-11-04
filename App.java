@@ -41,6 +41,9 @@ public class App {
         System.out.println(configFile.exists());
         try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
+            while(line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
+                line = br.readLine();
+            }
             Scanner scanner = new Scanner(line);
             int num_nodes = scanner.nextInt();
             neighbors = new InetSocketAddress[num_nodes];
