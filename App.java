@@ -91,7 +91,7 @@ public class App {
             System.out.println("Requesting to enter Critical Section for " + cs_execution_time + "ms");
             if (requests != error_request) {
                 mutex.cs_enter();
-                System.out.println("Simulating error in ");
+                System.out.println("\033[47;41mERROR: entering critical section without permission\033[0m");
             }
             System.out.println("\033[47;41mEntering Critical Section\033[0m");
             try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))){
@@ -107,7 +107,10 @@ public class App {
                 e.printStackTrace();
                 System.exit(0);
             }
-            mutex.cs_leave();
+            if (requests != error_request) {
+                mutex.cs_leave();
+                System.out.println("\033[47;42mLeaving Critical Section after illegal enter\033[0m");
+            }
             System.out.println("\033[47;42mLeaving Critical Section\033[0m");
         }
         System.out.println("\033[0;44mFinished all requests\033[0m");
