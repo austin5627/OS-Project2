@@ -160,10 +160,6 @@ public class Mutex extends Thread {
         channelMap.put(nodeID, channel);
     }
 
-    public void removeConnection(int nodeID) {
-        channelMap.remove(nodeID);
-    }
-
     public void updateClock(int msgClock) {
         // Since the get and the set are separate, I am not sure if this is safe
         logClock.set(Math.max(logClock.get(), msgClock) + 1);
