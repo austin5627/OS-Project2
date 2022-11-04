@@ -2,6 +2,8 @@ import java.io.*;
 import java.net.InetSocketAddress;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 public class App {
@@ -18,6 +20,7 @@ public class App {
     public long startTime;
 
     public long totalResponseTime = 0;
+    public Logger logger = Logger.getLogger("App");
 
 
     public static void main(String[] args) {
@@ -39,6 +42,7 @@ public class App {
         this.portNum = portNum;
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
         System.out.println("Node " + nodeID + " is up and running");
+        logger.setLevel(Level.INFO);
     }
 
     public void load_config(String filename, int nodeID) {
@@ -116,6 +120,7 @@ public class App {
             }
             mutex.cs_leave();
             long response_time = System.currentTimeMillis() - cs_enter_time;
+            logger.info("Response time: " + response_time);
             totalResponseTime += response_time;
             System.out.println("\033[37;42mLeaving Critical Section\033[0m  ");
         }
@@ -128,7 +133,9 @@ public class App {
             System.out.println("Response Time: " + avgResponseTime + " ms");
             System.out.println("Throughput: " + throughput * 1000 + " requests per second");
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATAFILE))) {
-                writer.write(avgResponseTime + " " + throughput + " " + MEAN_INTER_REQUEST_DELAY + " " + MEAN_CS_EXECUTION_TIME + "\n");
+                writer.write("Response Time: " + avgResponseTime + " ms\nThroughput: " + throughput * 1000 +
+                        " requests per second\nMean inter-request delay: " + MEAN_INTER_REQUEST_DELAY +
+                        "ms\nMean CS execustion time: " + MEAN_CS_EXECUTION_TIME + " ms\n");
             } catch (IOException e) {
                 System.exit(0);
             }
