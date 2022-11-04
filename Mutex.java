@@ -97,7 +97,7 @@ public class Mutex extends Thread {
             try {
                 synchronized(this) {
                     wait();
-                    System.out.println("Woke up: " + higherTimestamp.size() + " " + Arrays.toString(pq.toArray()));
+//                    System.out.println("Woke up: " + higherTimestamp.size() + " " + Arrays.toString(pq.toArray()));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
