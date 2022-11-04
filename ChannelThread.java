@@ -2,11 +2,14 @@ import com.sun.nio.sctp.SctpChannel;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.ClosedChannelException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class ChannelThread extends Thread {
     SctpChannel sc;
     final Mutex mutex;
     int connected_id;
+    Logger logger;
 
     public ChannelThread(SctpChannel sc, Mutex mutex, int connected_id) {
         this.sc = sc;
@@ -33,18 +36,18 @@ public class ChannelThread extends Thread {
                 if (MessageType.request == message.msgType) {
                     Request req = (Request) message.message;
                     mutex.pq.put(req);
-                    // System.out.println("Received request from " + message.sender);
+                    // logger.log(Level.INFO, "Received request from " + message.sender);
                     // Send reply
                     Message reply = new Message(mutex.nodeID, MessageType.reply, "REPLY", mutex.logClock.get());
                     reply.send(sc);
                     mutex.updateClock();
-                    // System.out.println("Sent reply to " + message.sender);
+                    // logger.log(Level.INFO, "Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
-//                    System.out.println("Received release from " + message.sender + " removing from queue");
+//                    logger.log(Level.INFO, "Received release from " + message.sender + " removing from queue");
                     Request req = (Request) message.message;
                     if (!mutex.pq.remove(req)) {
-                        System.out.println("Request not found in queue");
+                        logger.log(Level.WARNING, "Request not found in queue " + req);
                     }
                     synchronized (mutex) {
                         mutex.notify();
@@ -59,7 +62,7 @@ public class ChannelThread extends Thread {
                     }
                 }
                 if (mutex.requestTime.get() < message.clock) {
-//                     System.out.println("Received message with higher clock value from " + message.sender);
+//                     logger.log(Level.INFO, "Received message with higher clock value from " + message.sender);
                     mutex.higherTimestamp.add(message.sender);
                     synchronized (mutex) {
                         mutex.notify();
@@ -67,7 +70,7 @@ public class ChannelThread extends Thread {
                 }
             }
         } catch (ClosedChannelException e){
-            System.out.println("Received all messages");
+            logger.log(Level.INFO, "Received all messages");
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

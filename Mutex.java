@@ -8,6 +8,8 @@ import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Mutex extends Thread {
     public final AtomicInteger logClock = new AtomicInteger(0);
@@ -22,12 +24,14 @@ public class Mutex extends Thread {
     public final int port;
     private final ConcurrentHashMap<Integer, SctpChannel> channelMap = new ConcurrentHashMap<>();
     public final AtomicLong respTime = new AtomicLong(0);
+    public Logger logger;
 
     public Mutex(int numProc, int nodeID, InetSocketAddress[] addresses, int port) {
         this.nodeID = nodeID;
         this.numProc = numProc;
         this.numAlive = new AtomicInteger(numProc);
         this.port = port;
+        this.logger = Logger.getLogger("App");
         initialize_connections(addresses);
     }
 
@@ -43,10 +47,10 @@ public class Mutex extends Thread {
                 channelMap.put(i, channel);
                 ChannelThread channelThread = new ChannelThread(channel, this, i);
                 channelThread.start();
-                System.out.println("Established connection with " + i);
+                logger.log(Level.INFO, "Established connection with " + i);
                 i++;
             } catch (ConnectException e) {
-                System.out.println("Connection refused from " + i + ", retrying in 1 second...");
+                logger.log(Level.INFO, "Connection refused from " + i + ", retrying in 1 second...");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ie) {
@@ -58,18 +62,13 @@ public class Mutex extends Thread {
                 System.exit(0);
             }
         }
-        System.out.println("All outgoing connections established");
+        logger.log(Level.INFO, "All outgoing connections established");
         try {
             acceptThread.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        System.out.println("All incoming connections established");
-        System.out.print("All connections: ");
-        for (int k : channelMap.keySet()) {
-            System.out.print(k + " ");
-        }
-        System.out.println();
+        logger.log(Level.INFO, "All incoming connections established");
     }
 
     public void broadcast(Message msg) {
@@ -78,7 +77,7 @@ public class Mutex extends Thread {
                 if (channel.isOpen()) {
                     msg.send(channel);
                 } else {
-                    System.out.println("Channel is closed");
+                    logger.log(Level.INFO, "Channel is closed");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -150,7 +149,7 @@ public class Mutex extends Thread {
     }
 
     public void closeConnections() {
-        System.out.println("Closing connections");
+        logger.log(Level.INFO, "Closing connections");
         for (SctpChannel c : channelMap.values()) {
             try {
                 c.close();
