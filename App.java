@@ -9,7 +9,6 @@ import java.util.logging.SimpleFormatter;
 import java.util.regex.Pattern;
 
 public class App {
-
     public int MEAN_INTER_REQUEST_DELAY;
     public int MEAN_CS_EXECUTION_TIME;
     public int NUM_REQUESTS;
@@ -20,10 +19,8 @@ public class App {
     public final int portNum;
     InetSocketAddress[] neighbors;
     public long startTime;
-
     public long totalResponseTime = 0;
     public Logger logger = Logger.getLogger("App");
-
 
     public static void main(String[] args) {
         String config_file = args[0];
@@ -38,22 +35,23 @@ public class App {
     }
 
     public App(String config_file, int nodeID, int portNum) {
+        try {
+            FileHandler fh = new FileHandler("App.log");
+            SimpleFormatter fmt = new SimpleFormatter();
+            System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s %n");
+            fh.setFormatter(fmt);
+            logger.addHandler(fh);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        logger.setLevel(Level.WARNING);
+
         logger.log(Level.INFO, "Starting node " + nodeID + " on port " + portNum);
         load_config(config_file, nodeID);
         this.nodeID = nodeID;
         this.portNum = portNum;
         mutex = new Mutex(neighbors.length, nodeID, neighbors, portNum);
         logger.log(Level.INFO, "Node " + nodeID + " is up and running");
-        try {
-            FileHandler fh = new FileHandler("App.log");
-            SimpleFormatter fmt = new SimpleFormatter();
-            System.setProperty("java.util.logging.SimpleFormatter.format",
-                      "[%4$-7s] %5$s %n");fh.setFormatter(fmt);
-            logger.addHandler(fh);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        logger.setLevel(Level.WARNING);
     }
 
     public void load_config(String filename, int nodeID) {
