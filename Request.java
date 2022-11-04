@@ -1,3 +1,4 @@
+import java.io.Serializable;
 
 public class Request implements Comparable<Request>, Serializable {
     public final int nodeID;
