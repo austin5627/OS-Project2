@@ -95,15 +95,19 @@ public class App {
                 mutex.cs_enter();
             }
             System.out.println("\033[47;41mEntering Critical Section\033[0m");
-            try(BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))){
+            try{
+                BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true))
                 writer.write(nodeID + ": " + requests + " ENTER\n");
+                writer.close();
                 try {
                     Thread.sleep(cs_execution_time);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
                 }
+                writer = new BufferedWriter(new FileWriter(LOGFILE, true));
                 writer.write(nodeID + ": " + requests + " EXIT\n");
+                writer.close();
             } catch (IOException e) {
                 e.printStackTrace();
                 System.exit(0);
