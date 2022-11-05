@@ -47,10 +47,10 @@ public class Mutex extends Thread {
                 channelMap.put(i, channel);
                 ChannelThread channelThread = new ChannelThread(channel, this, i);
                 channelThread.start();
-                logger.log(Level.INFO, "Established connection with " + i);
+                logger.log(Level.CONFIG, "Established connection with " + i);
                 i++;
             } catch (ConnectException e) {
-                logger.log(Level.INFO, "Connection refused from " + i + ", retrying in 1 second...");
+                logger.log(Level.CONFIG, "Connection refused from " + i + ", retrying in 1 second...");
                 try {
                     Thread.sleep(1000);
                 } catch (InterruptedException ie) {
@@ -62,13 +62,14 @@ public class Mutex extends Thread {
                 System.exit(0);
             }
         }
-        logger.log(Level.INFO, "All outgoing connections established");
+        logger.log(Level.CONFIG, "All outgoing connections established");
         try {
             acceptThread.join();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        logger.log(Level.INFO, "All incoming connections established");
+        logger.log(Level.CONFIG, "All incoming connections established");
+        logger.log(Level.INFO, "All connections established");
     }
 
     public void broadcast(Message msg) {
@@ -77,7 +78,7 @@ public class Mutex extends Thread {
                 if (channel.isOpen()) {
                     msg.send(channel);
                 } else {
-                    logger.log(Level.INFO, "Channel is closed");
+                    logger.log(Level.CONFIG, "Channel is closed");
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -149,7 +150,7 @@ public class Mutex extends Thread {
     }
 
     public void closeConnections() {
-        logger.log(Level.INFO, "Closing connections");
+        logger.log(Level.CONFIG, "Closing connections");
         for (SctpChannel c : channelMap.values()) {
             try {
                 c.close();

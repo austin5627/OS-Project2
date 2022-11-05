@@ -15,7 +15,7 @@ public class ChannelThread extends Thread {
         this.sc = sc;
         this.mutex = mutex;
         this.connected_id = connected_id;
-
+        logger = Logger.getLogger("App");
     }
 
     public void run() {
@@ -36,15 +36,15 @@ public class ChannelThread extends Thread {
                 if (MessageType.request == message.msgType) {
                     Request req = (Request) message.message;
                     mutex.pq.put(req);
-                    // logger.log(Level.INFO, "Received request from " + message.sender);
+                    logger.log(Level.CONFIG, "Received request from " + message.sender);
                     // Send reply
                     Message reply = new Message(mutex.nodeID, MessageType.reply, "REPLY", mutex.logClock.get());
                     reply.send(sc);
                     mutex.updateClock();
-                    // logger.log(Level.INFO, "Sent reply to " + message.sender);
+                    logger.log(Level.CONFIG, "Sent reply to " + message.sender);
                 }
                 else if (MessageType.release == message.msgType) {
-//                    logger.log(Level.INFO, "Received release from " + message.sender + " removing from queue");
+                    logger.log(Level.CONFIG, "Received release from " + message.sender + " removing from queue");
                     Request req = (Request) message.message;
                     if (!mutex.pq.remove(req)) {
                         logger.log(Level.WARNING, "Request not found in queue " + req);
@@ -62,7 +62,7 @@ public class ChannelThread extends Thread {
                     }
                 }
                 if (mutex.requestTime.get() < message.clock) {
-//                     logger.log(Level.INFO, "Received message with higher clock value from " + message.sender);
+                    logger.log(Level.CONFIG, "Received message with higher clock value from " + message.sender);
                     mutex.higherTimestamp.add(message.sender);
                     synchronized (mutex) {
                         mutex.notify();
@@ -70,7 +70,7 @@ public class ChannelThread extends Thread {
                 }
             }
         } catch (ClosedChannelException e){
-            logger.log(Level.INFO, "Received all messages");
+            logger.log(Level.CONFIG, "Received all messages");
         } catch (Exception e) {
             e.printStackTrace();
             System.exit(0);

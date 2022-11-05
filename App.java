@@ -36,15 +36,15 @@ public class App {
 
     public App(String config_file, int nodeID, int portNum) {
         try {
+            System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s %n");
             FileHandler fh = new FileHandler("App.log");
             SimpleFormatter fmt = new SimpleFormatter();
-            System.setProperty("java.util.logging.SimpleFormatter.format", "[%4$-7s] %5$s %n");
             fh.setFormatter(fmt);
             logger.addHandler(fh);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        logger.setLevel(Level.WARNING);
+        logger.setLevel(Level.INFO);
 
         logger.log(Level.INFO, "Starting node " + nodeID + " on port " + portNum);
         load_config(config_file, nodeID);
@@ -56,7 +56,7 @@ public class App {
 
     public void load_config(String filename, int nodeID) {
         File configFile = new File(filename);
-        logger.log(Level.INFO, "" + configFile.exists());
+        logger.log(Level.CONFIG, "" + configFile.exists());
         try (BufferedReader br = new BufferedReader(new FileReader(configFile))){
             String line = br.readLine();
             while(line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
@@ -68,7 +68,6 @@ public class App {
             MEAN_INTER_REQUEST_DELAY = scanner.nextInt();
             MEAN_CS_EXECUTION_TIME = scanner.nextInt();
             NUM_REQUESTS = scanner.nextInt();
-            DATAFILE = "./DATA_IR" + MEAN_INTER_REQUEST_DELAY + "_CS" + MEAN_CS_EXECUTION_TIME + ".txt";
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
                     continue;
@@ -98,7 +97,7 @@ public class App {
         startTime = System.currentTimeMillis();
         while (requests < NUM_REQUESTS) {
             int delay = (int) (Math.log(1.0 - Math.random()) * -MEAN_INTER_REQUEST_DELAY);
-            logger.log(Level.INFO, "Non-critical section delay: " + delay);
+            logger.log(Level.INFO, "Non-critical section for " + delay + " ms");
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
@@ -107,10 +106,10 @@ public class App {
             }
             int cs_execution_time = (int) (Math.log(1.0 - Math.random()) * -MEAN_CS_EXECUTION_TIME);
             requests++;
-            logger.log(Level.INFO, "Requesting to enter Critical Section for " + cs_execution_time + "ms");
+            logger.log(Level.CONFIG, "Requesting to enter Critical Section for " + cs_execution_time + "ms");
             long cs_enter_time = System.currentTimeMillis();
             mutex.cs_enter();
-            logger.log(Level.INFO, "\033[37;41mEntering Critical Section\033[0m " + requests);
+            logger.log(Level.INFO, "\033[30;41mEntering\033[0m Critical Section " + requests + " for " + cs_execution_time + "ms");
             try{
                 BufferedWriter writer = new BufferedWriter(new FileWriter(LOGFILE, true));
                 writer.write(nodeID + " " + requests + " ENTER\n");
@@ -132,9 +131,9 @@ public class App {
             long response_time = System.currentTimeMillis() - cs_enter_time;
             logger.log(Level.FINE, "Response time: " + response_time);
             totalResponseTime += response_time;
-            logger.log(Level.INFO, "\033[37;42mLeaving Critical Section\033[0m  ");
+            logger.log(Level.INFO, "\033[30;42mLeaving\033[0m Critical Section");
         }
-        logger.log(Level.INFO, "\033[0;44mFinished all requests\033[0m");
+        logger.log(Level.CONFIG, "\033[0;44mFinished all requests\033[0m");
         long totalResponseTimeAll = mutex.terminate(totalResponseTime);
         if (nodeID == 0) {
             double avgResponseTime = (double) totalResponseTimeAll / (double) (this.NUM_REQUESTS * this.mutex.numProc);
