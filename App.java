@@ -13,7 +13,7 @@ public class App {
     public int MEAN_CS_EXECUTION_TIME;
     public int NUM_REQUESTS;
     public static final String LOGFILE = "./LOCK.txt";
-    public static final String DATAFILE = "./DATA.txt";
+    public static String DATAFILE = "./DATA.txt";
     public final Mutex mutex;
     public final int nodeID;
     public final int portNum;
@@ -68,6 +68,7 @@ public class App {
             MEAN_INTER_REQUEST_DELAY = scanner.nextInt();
             MEAN_CS_EXECUTION_TIME = scanner.nextInt();
             NUM_REQUESTS = scanner.nextInt();
+            DATAFILE = "./DATA_IR" + MEAN_INTER_REQUEST_DELAY + "_CS" + MEAN_CS_EXECUTION_TIME + ".txt";
             while ((line = br.readLine()) != null) {
                 if (line.trim().isEmpty() || line.trim().startsWith("#") || !Pattern.matches("^\\d.*", line.trim())) {
                     continue;
