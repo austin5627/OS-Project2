@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Change this to your netid
-netid=$(whoami)
+netid=ash170000
 
 # Directory where the config file is located on the running system
-CONFIGREMOTE=./config.txt
+CONFIGLOCAL=./config.txt
 
 n=0
 
 
-cat $CONFIGREMOTE | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
+cat $CONFIGLOCAL | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
 (
     read i
     echo $i
@@ -26,5 +26,4 @@ cat $CONFIGREMOTE | sed -e "s/#.*//" | sed -e "/^\s*$/d" |
     done
 )
 
-killall xterm
 echo "Cleanup complete"

@@ -141,10 +141,10 @@ public class App {
             System.out.println("Critical Section is mutually exclusive: " + checkLog());
             System.out.println("Response Time: " + avgResponseTime + " ms");
             System.out.println("Throughput: " + throughput * 1000 + " requests per second");
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATAFILE))) {
-                writer.write("Mutually Exclusive: " + checkLog() + "\n\nResponse Time: " + avgResponseTime + " ms\nThroughput: " + throughput * 1000 +
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(DATAFILE, true))) {
+                writer.write("Mutually Exclusive: " + checkLog() + "\nResponse Time: " + avgResponseTime + " ms\nThroughput: " + throughput * 1000 +
                         " requests per second\nMean inter-request delay: " + MEAN_INTER_REQUEST_DELAY +
-                        "ms\nMean CS execustion time: " + MEAN_CS_EXECUTION_TIME + " ms\n");
+                        "ms\nMean CS execustion time: " + MEAN_CS_EXECUTION_TIME + " ms\n\n");
                 writer.close();
             } catch (IOException e) {
                 System.exit(0);

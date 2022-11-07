@@ -1,4 +1,4 @@
-Austin Harris, ash170000  
+Austin Harris, ash170000
 Ethan Cooper, ewc18001
 
 # Running
@@ -6,7 +6,8 @@ Edit [launcher.sh](launcher.sh) to add the correct environment variables
 
 - netid: user to run as
 - PROJDIR: path to project
-- CONFIGREMOTE: path to config file
+- CONFIGLOCAL: path to config file on local machine
+- CONFIGREMOTE: path to config file on running machine
 - BINDIR: path to java files
 - PROG: App
 

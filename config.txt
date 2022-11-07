@@ -1,10 +1,10 @@
 # num_nodes inter_request cs_execution num_requests
-8 5 5 1000
-0 dc02 1234
-1 dc03 1233
-2 dc04 1233
-3 dc05 1232
-4 dc06 1234
-5 dc07 1234
-6 dc08 1234
-7 dc09 1234
+8 5 8 1000
+0 dc02 9199
+1 dc03 9199
+2 dc04 9199
+3 dc10 9199
+4 dc06 9199
+5 dc07 9199
+6 dc08 9199
+7 dc09 9199
